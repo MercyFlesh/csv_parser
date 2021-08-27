@@ -21,7 +21,9 @@ public:
 
 	int calculate_expression(std::string expression);
 	void parse_expressions();
+
 	friend XlsTable load(std::istream& input_stream);
+	friend std::ostream& operator<<(std::ostream& os, const XlsTable& table);
 
 private:
 	std::unordered_map<std::tuple<std::string, int>, std::string, Hasher> cells;
@@ -30,4 +32,5 @@ private:
 };
 
 XlsTable load(std::istream& input_stream);
+std::ostream& operator<<(std::ostream& os, const csv::XlsTable& table);
 }

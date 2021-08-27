@@ -101,4 +101,22 @@ void XlsTable::parse_expressions() {
 		}
 	}
 }
+
+ostream& operator<< (ostream& os, const csv::XlsTable& table)
+{
+	for (const string& col : table.col_names) {
+		os << "," << col;
+	}
+
+	for (int row_num : table.row_names) {
+		os << "\n" << row_num;
+		for (string col : table.col_names) {
+			os << "," << table.cells.at(make_tuple(col, row_num));
+		}
+	}
+
+	return os;
 }
+}
+
+
