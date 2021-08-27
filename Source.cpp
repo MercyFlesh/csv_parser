@@ -8,15 +8,17 @@ using namespace std;
 
 int main(int argc, char* argv[]) 
 {
-	string file_path = "C:\\Users\\artem\\source\\repos\\cpp\\csv_parser\\example.csv";
+	if (argc < 2)
+		return 1;
+
 	ifstream f;
 	f.exceptions(ifstream::failbit|ifstream::badbit);
 
 	try 
 	{
-		f.open(file_path);
+		f.open(argv[1]);
 		csv::XlsTable doc = csv::load(f);
-		
+
 		doc.calculate_all_expressions();
 		cout << doc << endl;
 	} 
