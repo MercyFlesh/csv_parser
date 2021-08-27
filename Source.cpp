@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	try 
 	{
 		f.open(argv[1]);
-		csv::Document doc = csv::load(f);
+		csv::XlsTable doc = csv::load(f);
 	} 
 	catch (const ifstream::failure& ex) 
 	{

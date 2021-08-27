@@ -13,15 +13,15 @@ struct Hasher
 	std::size_t operator() (const std::tuple<std::string, int>& key) const;
 };
 
-class Document
+class XlsTable
 {
 public:
-	Document() = default;
-	~Document() = default;
+	XlsTable() = default;
+	~XlsTable() = default;
 
-	int calculate(std::string operation);
-	void example_parse();
-	friend Document load(std::istream& input_stream);
+	int calculate_expression(std::string expression);
+	void parse_expressions();
+	friend XlsTable load(std::istream& input_stream);
 
 private:
 	std::unordered_map<std::tuple<std::string, int>, std::string, Hasher> cells;
@@ -29,5 +29,5 @@ private:
 	std::vector<int> row_names;
 };
 
-Document load(std::istream& input_stream);
+XlsTable load(std::istream& input_stream);
 }

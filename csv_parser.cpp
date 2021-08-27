@@ -12,8 +12,8 @@ size_t Hasher::operator()(const tuple<string, int>& key) const {
 }
 
 
-Document load(istream& input_stream) {
-	Document doc;	
+XlsTable load(istream& input_stream) {
+	XlsTable doc;	
 	if (input_stream.peek() != EOF) {
 		string line;
 		string cell;
@@ -50,7 +50,7 @@ Document load(istream& input_stream) {
 }
 
 
-int Document::calculate(string expression) {
+int XlsTable::calculate_expression(string expression) {
 	regex regular("="
 		"([a-zA-Z]+)([0-9]+)"
 		"([+\\-*/])"
@@ -67,12 +67,12 @@ int Document::calculate(string expression) {
 		int num_b;
 
 		if (a[0] == '=')
-			num_a = calculate(a);
+			num_a = calculate_expression(a);
 		else
 			num_a = atoi(a.c_str());
 		
 		if (b[0] == '=')
-			num_b = calculate(b);
+			num_b = calculate_expression(b);
 		else
 			num_b = atoi(b.c_str());
 
@@ -93,11 +93,11 @@ int Document::calculate(string expression) {
 }
 
 
-void Document::example_parse() {
+void XlsTable::parse_expressions() {
 	for (auto& [k, v] : cells) 
 	{
 		if (v[0] == '=') {
-			v = to_string(calculate(v));
+			v = to_string(calculate_expression(v));
 		}
 	}
 }
