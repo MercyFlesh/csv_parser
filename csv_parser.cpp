@@ -48,4 +48,57 @@ Document load(istream& input_stream) {
 
 	return doc;
 }
+
+
+int Document::calculate(string expression) {
+	regex regular("="
+		"([a-zA-Z]+)([0-9]+)"
+		"([+\\-*/])"
+		"([a-zA-Z]+)([0-9]+)");
+	smatch matcher;
+
+	if (regex_match(expression, matcher, regular)) 
+	{
+		string a = cells[make_tuple(matcher[1].str(), atoi(matcher[2].str().c_str()))];
+		string b = cells[make_tuple(matcher[4].str(), atoi(matcher[5].str().c_str()))];
+		char op = matcher[3].str()[0];
+
+		int num_a;
+		int num_b;
+
+		if (a[0] == '=')
+			num_a = calculate(a);
+		else
+			num_a = atoi(a.c_str());
+		
+		if (b[0] == '=')
+			num_b = calculate(b);
+		else
+			num_b = atoi(b.c_str());
+
+		switch (op)
+		{
+		case '+':
+			return num_a + num_b;
+		case '-':
+			return num_a - num_b;
+		case '*':
+			return num_a * num_b;
+		case '/':
+			return num_a / num_b;
+		}
+	}
+
+	throw runtime_error("incorrect expression: " + expression);
+}
+
+
+void Document::example_parse() {
+	for (auto& [k, v] : cells) 
+	{
+		if (v[0] == '=') {
+			v = to_string(calculate(v));
+		}
+	}
+}
 }

@@ -19,6 +19,7 @@ public:
 	Document() = default;
 	~Document() = default;
 
+	int calculate(std::string operation);
 	void example_parse();
 	friend Document load(std::istream& input_stream);
 
