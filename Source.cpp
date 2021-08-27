@@ -8,16 +8,17 @@ using namespace std;
 
 int main(int argc, char* argv[]) 
 {
-	if (argc < 2)
-		return 1;
-
+	string file_path = "C:\\Users\\artem\\source\\repos\\cpp\\csv_parser\\example.csv";
 	ifstream f;
 	f.exceptions(ifstream::failbit|ifstream::badbit);
 
 	try 
 	{
-		f.open(argv[1]);
+		f.open(file_path);
 		csv::XlsTable doc = csv::load(f);
+		
+		doc.calculate_all_expressions();
+		cout << doc << endl;
 	} 
 	catch (const ifstream::failure& ex) 
 	{
