@@ -1,6 +1,8 @@
 #include <sstream>
 #include <utility>
 #include <regex>
+#include <algorithm>
+#include <iostream>
 
 #include "csv_parser.hpp"
 
@@ -17,27 +19,46 @@ namespace csv {
 		if (input_stream.peek() != EOF) {
 			string line;
 			string cell;
-	
+			regex reg_number_row("[1-9][0-9]*");
+			regex reg_cell("-?[0-9]+|"
+				"=[a-zA-Z]+[0-9]+[+\\-*/][a-zA-Z]+[0-9]+");
+
 			getline(input_stream, line);
 			stringstream row_stream(move(line));
-			getline(row_stream, cell, ',');
+			
+			if (row_stream.get() != ',') {
+				throw runtime_error("first empty field is missing");
+			}
+
 			while (getline(row_stream, cell, ',')) {
 				doc.col_names.push_back(move(cell));
 			}
-	
+
+			size_t cols_count = doc.col_names.size();
 			while (!input_stream.eof() && input_stream.peek() != EOF) {
 				getline(input_stream, line);
 				if (line != "") {
-					row_stream = stringstream(line);
+					if (doc.col_names.size() != count(line.begin(), line.end(), ',')) {
+						throw runtime_error("incorrect csv format, count values in rows not equal");
+					}
 					
+					row_stream = stringstream(line);
 					getline(row_stream, cell, ',');
+					if (!regex_match(cell, reg_number_row)) {
+						throw runtime_error("incorrect row numebr " + cell);
+					}
+
 					int num_row = atoi(cell.c_str());
 					doc.row_names.push_back(num_row);
 	
 					for (auto cols_it = doc.col_names.begin();
 						getline(row_stream, cell, ',') && cols_it != doc.col_names.end();
-						++cols_it) 
+						++cols_it)
 					{
+						if (!regex_match(cell, reg_cell)) {
+							throw runtime_error("incorrect cell value " + cell);
+						}
+
 						doc.cells[make_tuple(*cols_it, num_row)] = move(cell);
 					}
 				}
@@ -58,8 +79,8 @@ namespace csv {
 			tuple<std::string, int> a_cell_key = make_tuple(matcher[1].str(), atoi(matcher[2].str().c_str()));
 			tuple<std::string, int> b_cell_key = make_tuple(matcher[4].str(), atoi(matcher[5].str().c_str()));
 			
-			string a = cells[a_cell_key];
-			string b = cells[b_cell_key];
+			string a = cells.at(a_cell_key);
+			string b = cells.at(b_cell_key);
 			char op = matcher[3].str()[0];
 	
 			int num_a;
@@ -88,25 +109,35 @@ namespace csv {
 				result = num_a * num_b;
 				break;
 			case '/':
+				if (num_b == 0)
+					throw runtime_error("devision by zero " + expression);
 				result = num_a / num_b;
 				break;
 			default:
-				throw runtime_error("incorrect expression: " + expression);
+				throw runtime_error("incorrect operation " + expression);
 			}
 	
 			if (current_cell.has_value())
-				cells[*current_cell] = to_string(result);
+				cells.at(*current_cell) = to_string(result);
 	
 			return result;
 		}
 	
-		throw runtime_error("incorrect expression: " + expression);
+		throw runtime_error("incorrect expression " + expression);
 	}
 	
 	void XlsTable::calculate_all_expressions() {
 		for (auto& [k, v] : cells) {
 			if (v[0] == '=') {
-				v = to_string(calculate_expression(v));
+				try {
+					v = to_string(calculate_expression(v));
+				}
+				catch (const out_of_range&) {
+					throw out_of_range("incorrect addres cell in expression " + v);
+				}
+				catch (const exception& ex) {
+					throw;
+				}
 			}
 		}
 	}

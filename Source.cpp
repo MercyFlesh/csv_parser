@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		cout << ex.what() << endl;
 	} 
 	catch (const exception& ex) {
-		cout << ex.what() << endl;
+		cout << "[-] error: " << ex.what() << endl;
 	}
 
 	f.close();
