@@ -93,10 +93,10 @@ int XlsTable::calculate_expression(const string& expression, optional<tuple<std:
 			result = num_a - num_b;
 			break;
 		case '*':
-			return num_a * num_b;
+			result = num_a * num_b;
 			break;
 		case '/':
-			return num_a / num_b;
+			result = num_a / num_b;
 			break;
 		default:
 			throw runtime_error("incorrect expression: " + expression);
