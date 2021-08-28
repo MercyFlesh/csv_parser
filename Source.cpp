@@ -14,20 +14,17 @@ int main(int argc, char* argv[])
 	ifstream f;
 	f.exceptions(ifstream::failbit|ifstream::badbit);
 
-	try 
-	{
+	try {
 		f.open(argv[1]);
 		csv::XlsTable doc = csv::load(f);
 
 		doc.calculate_all_expressions();
 		cout << doc << endl;
 	} 
-	catch (const ifstream::failure& ex) 
-	{
+	catch (const ifstream::failure& ex) {
 		cout << ex.what() << endl;
 	} 
-	catch (const exception& ex) 
-	{
+	catch (const exception& ex) {
 		cout << ex.what() << endl;
 	}
 
