@@ -77,7 +77,7 @@ void assertEqual(const T& a, const U& b, const std::string& hint = "") {
         ss << "Assertion failed: " << a << " != " << b ;
         if (!hint.empty())
             ss << "\nhint: " << hint << "\n";
-     
+   
 
         throw std::runtime_error(ss.str());
     }
@@ -85,6 +85,13 @@ void assertEqual(const T& a, const U& b, const std::string& hint = "") {
 
 
 #define RUN_TEST(test_obj, func) test_obj.runTestCase(func, #func)
+
+#define ASSERT(x) {                         \
+    std::stringstream ss;                   \
+    ss << #x << "!= true, ";                \
+    ss << __FILE__ << ":" << __LINE__;      \
+    assertEqual(x, true, ss.str());         \
+}
 
 #define ASSERT_EQUAL(x, y) {                \
     std::stringstream ss;                   \
@@ -110,7 +117,8 @@ void assertEqual(const T& a, const U& b, const std::string& hint = "") {
     try {                                                                   \
         func(__VA_ARGS__);                                                  \
     } catch (const expectedException& ex) {                                 \
-        assertEqual(whatString, ex.what(), ss.str());                       \
+        std::string err = ex.what();                                        \
+        assertEqual(whatString, err, ss.str());                             \
     }                                                                       \
 }
 
