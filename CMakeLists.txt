@@ -1,13 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(csv_task LANGUAGES CXX)
+project(test_task LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Debug)
-
-file(GLOB SOURCES "*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_subdirectory(main)
+add_subdirectory(test)

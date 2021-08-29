@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "csv_parser.hpp"
+#include "../main/csv_parser.hpp"
 #include "cpptest.hpp"
 
 using namespace std;
