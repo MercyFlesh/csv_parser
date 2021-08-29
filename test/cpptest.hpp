@@ -36,55 +36,48 @@ private:
 };
 
 template<typename T>
-std::ostream& operator<< (std::ostream& ss, const std::vector<T>& s) {
-    ss << "{";
+std::ostream& operator<< (std::ostream& os, const std::vector<T>& vec) {
+    os << "{";
     bool first = true;
-    for (const auto& x : s) {
+    for (const auto& x : vec) {
         if (!first)
-            ss << ", ";
+            os << ", ";
 
         first = false;
-        ss << x;
+        os << x;
     }
 
-    return ss << "}";
+    return os << "}";
 }
 
-template <class K, class V>
-std::ostream& operator<< (std::ostream& ss, const std::unordered_map<K, V>& m) {
-    ss << "{";
+template <typename K, typename V>
+std::ostream& operator<< (std::ostream& os, const std::unordered_map<K, V>& m) {
+    os << "{";
     bool first = true;
     for (const auto& [k, v] : m) {
         if (!first) {
-            ss << ", ";
+            os << ", ";
         }
 
         first = false;
-        ss << k << ": " << v;
+        os << k << ": " << v;
     }
 
-    return ss << "}";
+    return os << "}";
 }
 
-template<class T, class U>
-void assertEqual(const T& t, const U& u, const std::string& hint = "") {
-    if (t != u) {
-        std::stringstream ss;
-        ss << "Assertion failed: " << t << " != " << u ;
-        if (!hint.empty())
-            ss << "\nhint: " << hint << "\n";
-
-        throw std::runtime_error(ss.str());
-    }
+std::ostream& operator<< (std::ostream& os, const std::type_info& s) {
+    return os << s.name();
 }
 
 template<typename T, typename U>
-void assertEqualType(const T& t_id, const U& u_id, const std::string& hint = "") {
-    if (t_id != u_id) {
+void assertEqual(const T& a, const U& b, const std::string& hint = "") {
+    if (a != b) {
         std::stringstream ss;
-        ss << "Assertion failed: " << t_id.name() << " != " << u_id.name();
+        ss << "Assertion failed: " << a << " != " << b ;
         if (!hint.empty())
             ss << "\nhint: " << hint << "\n";
+     
 
         throw std::runtime_error(ss.str());
     }
@@ -101,12 +94,12 @@ void assertEqualType(const T& t_id, const U& u_id, const std::string& hint = "")
 
 #define ASSERT_THROW(func, expectedException, ...) {                        \
     std::stringstream  ss;                                                  \
-    oss << #func << "() throw wrong exception type, "                       \
+    ss << #func << "() throw wrong exception type, "                        \
         << __FILE__ << ":" << __LINE__;                                     \
     try {                                                                   \
         func(__VA_ARGS__);                                                  \
     } catch (const std::exception& ex) {                                    \
-        assertEqualType(typeid(expectedException), typeid(ex), ss.str());   \
+        assertEqual(typeid(expectedException), typeid(ex), ss.str());       \
     }                                                                       \
 }
 
