@@ -26,7 +26,7 @@ namespace csv {
 			getline(input_stream, line);
 			stringstream row_stream(move(line));
 			
-			if (row_stream.get() != ',') {
+			if (line != "" && row_stream.get() != ',') {
 				throw runtime_error("first empty field is missing");
 			}
 
@@ -113,8 +113,6 @@ namespace csv {
 					throw runtime_error("devision by zero " + expression);
 				result = num_a / num_b;
 				break;
-			default:
-				throw runtime_error("incorrect operation " + expression);
 			}
 	
 			if (current_cell.has_value())
