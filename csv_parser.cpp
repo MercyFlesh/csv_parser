@@ -68,7 +68,7 @@ namespace csv {
 		return doc;
 	}
 	
-	int XlsTable::calculate_expression(const string& expression, optional<tuple<std::string, int>> current_cell = nullopt) {
+	int XlsTable::calculate_expression(const string& expression, optional<tuple<std::string, int>> current_cell) {
 		regex regular("="
 			"([a-zA-Z]+)([0-9]+)"
 			"([+\\-*/])"
@@ -168,6 +168,6 @@ namespace csv {
 	}
 	
 	string& XlsTable::operator()(const string& col_name, int row_num) {
-		return cells[make_tuple(col_name, row_num)];
+		return cells.at(make_tuple(col_name, row_num));
 	}
 }

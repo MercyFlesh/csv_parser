@@ -13,7 +13,7 @@ namespace csv {
 		XlsTable() = default;
 		~XlsTable() = default;
 	
-		int calculate_expression(const std::string& expression, std::optional<std::tuple<std::string, int>> current_cell);
+		int calculate_expression(const std::string& expression, std::optional<std::tuple<std::string, int>> current_cell = std::nullopt);
 		void calculate_all_expressions();
 	
 		std::vector<std::string> get_row(int row_num) const;
